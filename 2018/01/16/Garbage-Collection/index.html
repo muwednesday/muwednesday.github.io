@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Java Memory Management, with its built-in garbage collection, is one of the language’s finest achievements. It allows developers to create new objects without worrying explicitly about memory allocati">
+<meta name="keywords" content="Garbage Collection">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 垃圾回收机制">
+<meta property="og:url" content="https://muwednesday.github.io/2018/01/16/Garbage-Collection/index.html">
+<meta property="og:site_name" content="Muwednesday&#39;s Note">
+<meta property="og:description" content="Java Memory Management, with its built-in garbage collection, is one of the language’s finest achievements. It allows developers to create new objects without worrying explicitly about memory allocati">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://muwednesday.github.io/2018/01/16/Garbage-Collection/JVM.png">
+<meta property="og:image" content="https://dt-cdn.net/assets/images/content/ebook/javabook/gc-roots-1d9223317f.png">
+<meta property="og:image" content="https://muwednesday.github.io/2018/01/16/Garbage-Collection/mark-sweep.png">
+<meta property="og:image" content="https://muwednesday.github.io/2018/01/16/Garbage-Collection/copying.png">
+<meta property="og:image" content="https://muwednesday.github.io/2018/01/16/Garbage-Collection/mark-compact.png">
+<meta property="og:image" content="https://muwednesday.github.io/2018/01/16/Garbage-Collection/generation.png">
+<meta property="og:image" content="https://muwednesday.github.io/2018/01/16/Garbage-Collection/collectors.png">
+<meta property="og:image" content="https://muwednesday.github.io/2018/01/16/Garbage-Collection/VisualVM.png">
+<meta property="og:updated_time" content="2019-07-06T14:23:35.572Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java 垃圾回收机制">
+<meta name="twitter:description" content="Java Memory Management, with its built-in garbage collection, is one of the language’s finest achievements. It allows developers to create new objects without worrying explicitly about memory allocati">
+<meta name="twitter:image" content="https://muwednesday.github.io/2018/01/16/Garbage-Collection/JVM.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://muwednesday.github.io/2018/01/16/Garbage-Collection/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Java 垃圾回收机制 | Muwednesday's Note</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Muwednesday's Note</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/muwednesday" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://muwednesday.github.io/2018/01/16/Garbage-Collection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Muwednesday">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Muwednesday's Note">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java 垃圾回收机制
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-01-16 15:38:32" itemprop="dateCreated datePublished" datetime="2018-01-16T15:38:32+08:00">2018-01-16</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-06 22:23:35" itemprop="dateModified" datetime="2019-07-06T22:23:35+08:00">2019-07-06</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+                 Views:  
+                <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+              </span>
+            </span>
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote><p>Java Memory Management, with its built-in garbage collection, is one of the language’s finest achievements. It allows developers to create new objects without worrying explicitly about memory allocation and deallocation, because the garbage collector automatically reclaims memory for reuse. This enables faster development with less boilerplate code, while eliminating memory leaks and other memory-related problems. At least in theory.</p>
+<footer><strong>Java Memory Management</strong><cite><a href="https://www.dynatrace.com/resources/ebooks/javabook/how-garbage-collection-works/" target="_blank" rel="noopener">How Garbage Collection Works</a></cite></footer></blockquote>
+
+<p>Java 语言的一大特点就是可以进行自动垃圾回收。对 Java 程序员来说，在虚拟机（JVM）自动内存管理机制的帮助下，不再需要为每一个 new 操作去写配对的 delete/free 代码，不容易出现内存泄漏和内存溢出的问题。不过也正是因为这种便利，一旦出现内存泄漏和溢出方面的问题，如果不了解虚拟机是怎样使用内存的，那么排查错误将会成为一项异常艰难的任务。</p>
+<p>本文是对周志明先生的<a href="https://book.douban.com/subject/24722612/" target="_blank" rel="noopener">《 深入理解 Java 虚拟机（第二版）》</a>第二部分—— <strong>自动内存管理机制</strong> 做的读书笔记，想要了解更详细的内容，请阅读原著。</p>
+<h2 id="Java-内存区域"><a href="#Java-内存区域" class="headerlink" title="Java 内存区域"></a>Java 内存区域</h2><p>在介绍垃圾回收（Garbage Collection，GC）之前，首先来了解一下 JVM 运行时数据区。根据 <a href="https://docs.oracle.com/javase/specs/jvms/se8/jvms8.pdf" target="_blank" rel="noopener">《The Java® Virtual<br>Machine Specification _Java SE 8 Edition_》</a> 的规定，Java 虚拟机所管理的内存将会包括以下几个运行时数据区域：</p>
+<a id="more"></a>
+
+<ul>
+<li><p>程序计数器</p>
+<p>  程序计数器（Program Counter Register）是一块较小的内存区域，他可以看作是当前字节码的行号指示器。每条线程都有一个独立的程序计数器，各条线程之间计数器互不影响，独立存储。它是 <strong>线程私有</strong> 的内存，也是唯一一个在 Java 虚拟机规范中没有规定任何 OutOfMemoryError 情况的区域。</p>
+</li>
+<li><p>Java 虚拟机栈</p>
+<p>  Java 虚拟机栈（Java Virtual Machine Stacks）也是 <strong>线程私有</strong> 的，描述的是 Java 方法的内存模型，其中的局部变量表存放了编译器可知的各种基本数据类型、对象引用和 returnAddress 类型。<br>  如果线程请求的栈深度大于虚拟机所允许的深度，将抛出 <strong>StackOverflowError</strong>，如果虚拟机栈可以动态扩展，而扩展时无法申请到足够多的内存，就会抛出 <strong>OutOfMemoryError</strong>。</p>
+</li>
+<li><p>Java 堆</p>
+<p>  Java 堆（Heap）是被所有 <strong>线程共享</strong> 的一块区域，在虚拟机中启动时创建。它用于存放 <strong>对象实例</strong>，是垃圾收集器管理的主要区域。如果在堆中没有内存完成实例分配，并且堆也无法再扩展时，将会抛出 <strong>OutOfMemoryError</strong>。</p>
+</li>
+<li><p>方法区<br>  方法区（Method Area）是各个 <strong>线程共享</strong> 的内存区域，它用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。当方法区无法满足内存分配需求时，将抛出 <strong>OutOfMemoryError</strong>。</p>
+</li>
+<li><p>运行时常量池</p>
+<p>  运行时常量池（Run-Time Constant Pool）是方法区的一部分，它包括了若干种不同的常量：从编译期可知的数值字面量到必须运行期解析后才能获得的方法或字段引用。当常量池无法再申请到内存时会抛出 <strong>OutOfMemoryError</strong>。</p>
+</li>
+<li><p>本地方法栈</p>
+<p>  本地方法栈（Native Method Stacks）与 Java 虚拟机栈所发挥的作用是非常相似的，也是 <strong>线程私有</strong> 的。虚拟机栈为虚拟机执行 Java 方法服务，而本地方法栈则为虚拟机使用到的 Native 方法服务。<br>  它也会抛出 <strong>StackOverflowError</strong> 和 <strong>OutOfMemoryError</strong>。</p>
+</li>
+</ul>
+<p>另外，书中还介绍了直接内存（Direct Memory），它不是虚拟机运行时数据区的一部分，也不是 Java 虚拟机规范中定义的内存区域。服务器管理员在配置虚拟机参数时，会根据实际内存设置 -Xmx 等参数信息，但经常忽略直接内存，使得各内存区域总和大于物理内存限制，从而导致动态扩展时出现 <strong>OutOfMemoryError</strong>。</p>
+<p>下图为 HotSpot 虚拟机（Java 虚拟机规范的一种实现，是 Sun JDK 和 OpenJDK 中所带的虚拟机，也是目前使用范围最广的 Java 虚拟机）的架构图。</p>
+<p><img src="JVM.png" alt="Hotspot JVM: Architecture"></p>
+<p>在进行性能调优时，JVM 重点关注三个组件。其中堆是存储对象实例的地方，它由 JVM 启动时选择的垃圾收集器管理。大多数调优选项都是针对堆的大小以及如何根据情况选择最合适的垃圾收集器。JTI（Just-in-time）编译器对性能也有很大的影响，但使用新版本的 JVM 很少需要对其进行调优。</p>
+<h2 id="垃圾回收与内存分配"><a href="#垃圾回收与内存分配" class="headerlink" title="垃圾回收与内存分配"></a>垃圾回收与内存分配</h2><p>程序计数器、虚拟机栈、本地方法栈 3 个区域随线程而生，随线程而灭，它们的内存分配和回收都具备确定性。而 Java 堆和方法区则不同，一个接口中的多个实现类需要的内存可能不一样，一个方法中的多个分支需要的内存也可能不一样，我们只有在程序处于运行期间时才能知道会创建哪些对象，这部分内存的分配和回收都是动态的，垃圾回收器所关注的是这部分内存。</p>
+<h3 id="可达性分析算法"><a href="#可达性分析算法" class="headerlink" title="可达性分析算法"></a>可达性分析算法</h3><p>在主流的商用程序语言的主流实现中，都是通过 <strong>可达性分析</strong>（Reachability Analysis）来判定对象是否存活的。这个算法的基本思路就是通过一系列的称为 “GC Roots” 的对象作为起点，从这些节点开始向下搜索，搜索所走过的路径称为引用链（Reference Chain），当一个对象到 GC Roots 没有任何引用链相连（用图论的话来说，就是从 GC Roots 到这个对象不可达）时，则证明此对象是不可用的。</p>
+<p><img src="https://dt-cdn.net/assets/images/content/ebook/javabook/gc-roots-1d9223317f.png" alt="Reachability Analysis"></p>
+<h3 id="垃圾收集算法"><a href="#垃圾收集算法" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h3><h4 id="标记-清除算法"><a href="#标记-清除算法" class="headerlink" title="标记-清除算法"></a>标记-清除算法</h4><p>标记-清除（<a href="(https://en.wikipedia.org/wiki/Tracing_garbage_collection#Na%C3%AFve_mark-and-sweep)">Mark-Sweep</a>）算法分为 “标记” 和 “清除” 两个阶段：首先标记出所有需要回收的对象，在标记完成后统一回收所有被标记的对象。它有两个不足：一是效率问题，标记和清除两个过程的效率都不高；另一个是空间问题，标记清除后会产生大量不连续的内存碎片。</p>
+<p><img src="mark-sweep.png" alt="Mark-Sweep"></p>
+<h4 id="复制算法"><a href="#复制算法" class="headerlink" title="复制算法"></a>复制算法</h4><p>复制（<a href="https://en.wikipedia.org/wiki/Cheney%27s_algorithm" target="_blank" rel="noopener">Copying</a>）算法将可用内存按容量划分为大小相等的两块，当一块内存用完了，就将还存活着的对象复制到另一块上面，然后再把已使用过的内存一次清理掉。该算法简单高效，但代价是将内存缩小为原来的一半。</p>
+<p><img src="copying.png" alt="Copying"></p>
+<p>现代的商业虚拟机都是采用复制算法来回收新生代，新生代中的对象 98% 是 “朝生夕死” 的，可将内存分为一块较大的 Eden 空间和两块较小的 Survivor 空间（HotSpot 虚拟机默认比例为 8 : 1 : 1），每次使用 Eden 和其中的一块 Survivor。当回收时，将 Eden 和 Survivor 中还存活着的对象一次性地复制到另外一块 Survivor 空间上，最后清理掉 Eden 和刚才用过的 Survivor 空间。当 Survivor 空间不够用时，需要依赖其他内存（这里指老年代）进行分配担保（Handle Promotion）。</p>
+<h4 id="标记-整理算法"><a href="#标记-整理算法" class="headerlink" title="标记-整理算法"></a>标记-整理算法</h4><p>标记整理（<a href="(https://en.wikipedia.org/wiki/Mark-compact_algorithm)">Mark-Compact</a>）算法作用于老年代，其标记过程与 Mark-Sweep 算法一样，但后续步骤不是直接对可回收对象进行清理，而是让所有存活对象都移向一端，然后直接清理掉端边界以外的内存。</p>
+<p><img src="mark-compact.png" alt="Mark-Compact"></p>
+<h4 id="分代收集算法"><a href="#分代收集算法" class="headerlink" title="分代收集算法"></a>分代收集算法</h4><p>当前商业虚拟机的垃圾收集都采用分代收集（Generational Collection）算法。一般把 Java 堆分为新生代和老年代：在新生代中，每次垃圾收集时都发现有大批对象死去，只有少量存活，那就选用复制算法，只需要付出少量存活对象的复制成本就可以完成收集；而老年代中因为对象存活率高、没有额外空间对它进行分配担保，就必须使用 Mark-Sweep 或者 Mark-Compact 算法进行回收。</p>
+<p><img src="generation.png" alt="Generational Collection"></p>
+<p>新生代 GC（Minor GC）：指发生在新生代的垃圾收集动作，因为 Java 对象大多具有朝生夕灭的特性，所以 Minor GC 非常频繁，一般回收速度也比较块。</p>
+<p>老年代 GC （Major GC/ Full GC）：指发生在老年代的 GC，出现了 Major GC，经常会伴随着至少一次的 Minor GC（但非绝对的，在 Parallel Scavenge 收集器的收集策略里就有直接进行 Major GC 的策略选择过程）。Major GC 的速度一般会比 Minor GC 慢 10 倍以上。</p>
+<p>HotSpot 虚拟机使用永久代（Permanent Generation）来实现方法区，这样垃圾收集器可以像管理 Java 堆一样管理这部分内存。不过 JDK 8 已经 <a href="http://www.oracle.com/technetwork/java/javase/8-whats-new-2157071.html" target="_blank" rel="noopener"><strong>移除</strong></a> 了永久代，采用名为 <strong>Metaspace</strong> 的 Native Memory 来实现方法区，详见 <a href="https://blogs.oracle.com/poonam/about-g1-garbage-collector,-permanent-generation-and-metaspace" target="_blank" rel="noopener">这里</a>。</p>
+<h3 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h3><p>下图展示了 7 种作用于不同分代的收集器（<a href="https://blogs.oracle.com/jonthecollector/our-collectors" target="_blank" rel="noopener">Our Collectors</a>），如果两个收集器之间存在连线，就说明它们之间可以搭配使用。虚拟机所处的区域，则表示它是属于新生代收集器还是老年代收集器。</p>
+<p><img src="collectors.png" alt="HotSpot 虚拟机的垃圾收集器"></p>
+<p>JDK 9 <a href="https://docs.oracle.com/javase/9/whatsnew/toc.htm#JSNEW-GUID-C23AFD78-C777-460B-8ACE-58BE5EA681F6" target="_blank" rel="noopener"><strong>移除</strong></a> 了三个在 JDK 8 中被废弃的垃圾收集器组合，分别是 DefNew(Serial) + CMS、ParNew + SerialOld 以及 Incremental CMS（增量式并发收集器）。</p>
+<p>JDK 9 使用 G1 作为默认的垃圾回收器（JDK 8 中默认为 ParallelGC，即 Parallel Scavenge + Serial Old 的组合），并将 CMS 声明为 “deprecated”，即不再提倡用户使用。</p>
+<ul>
+<li><p>Serial 收集器</p>
+</li>
+<li><p>ParNew 收集器</p>
+</li>
+<li><p>Parallel Scavenge 收集器</p>
+</li>
+<li><p>Serial Old 收集器</p>
+</li>
+<li><p>Parallel Old 收集器</p>
+</li>
+<li><p>CMS 收集器</p>
+</li>
+<li><p>G1 收集器</p>
+</li>
+</ul>
+<p>有关 CMS 和 G1 收集器的详细介绍请移步 <a href="http://www.oracle.com/technetwork/tutorials/tutorials-1876574.html" target="_blank" rel="noopener">这里</a>。</p>
+<h3 id="内存分配与回收策略"><a href="#内存分配与回收策略" class="headerlink" title="内存分配与回收策略"></a>内存分配与回收策略</h3><p>对象优先在 Eden 分配，大对象直接进入老年代、长期存活的对象将进入老年代、动态对象年龄判断以及空间分配担保等。</p>
+<h2 id="虚拟机性能监控与故障处理工具"><a href="#虚拟机性能监控与故障处理工具" class="headerlink" title="虚拟机性能监控与故障处理工具"></a>虚拟机性能监控与故障处理工具</h2><h3 id="JDK-的命令行工具"><a href="#JDK-的命令行工具" class="headerlink" title="JDK 的命令行工具"></a>JDK 的命令行工具</h3><p>JDK 的 bin 目录中有大量的命令行工具，虽然在软件的使用说明中把它们声明为“没有技术支持并且是实验性质的”（Unsupported and experimental）的产品，但事实上，这些工具都非常稳定且功能强大，能在处理应用程序性能问题、定额为故障时发挥很大的作用。</p>
+<ul>
+<li><p>jps：虚拟机进程状况工具</p>
+</li>
+<li><p>jstat：虚拟机统计信息监视工具</p>
+</li>
+<li><p>jinfo：Java 配置信息工具</p>
+</li>
+<li><p>jmap：Java 内存映像工具</p>
+</li>
+<li><p>jhat：虚拟机堆转储快照分析工具</p>
+</li>
+<li><p>jstack：Java 堆栈跟踪工具</p>
+</li>
+<li><p>HSDIS：JIT 生成代码反汇编</p>
+</li>
+</ul>
+<h3 id="JDK-的可视化工具"><a href="#JDK-的可视化工具" class="headerlink" title="JDK 的可视化工具"></a>JDK 的可视化工具</h3><p>JDK 中除了提供命令行工具外，还有两个功能强大的可视化工具：JConsole 和 VisualVM，这两个工具是 JDK 的正式成员，没有被贴上 <em>Unsupported and experimental</em> 的标签。</p>
+<p>其中 JConsole 是在 JDK 1.5 时期就已经提供的虚拟机监控工具，而 VisualVM 在 JDK 1.6 Update7 中才首次发布，现已经成为 Sun（Oracle）主力推动的多合一故障处理工具，并且已经从 JDK 中分离出来成为可以独立发展的开源项目。</p>
+<ul>
+<li><p>JConsole：Java 监视与管理控制台</p>
+</li>
+<li><p>VisualVM：多合一故障处理工具</p>
+</li>
+</ul>
+<p>由于 VisualVM 已迁移到 GitHub 上，安装插件时需要设置 <a href="https://visualvm.github.io/pluginscenters.html" target="_blank" rel="noopener">Java VisualVM 插件中心</a> 的 URL 为对应版本的地址。</p>
+<p><img src="VisualVM.png" alt></p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><p>周志明. 深入理解Java虚拟机, 第2版[M]. 机械工业出版社, 2013.</p>
+</li>
+<li><p><a href="http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/gc01/index.html" target="_blank" rel="noopener">Java Garbage Collection Basics</a></p>
+</li>
+<li><p><a href="http://www.oracle.com/technetwork/tutorials/tutorials-1876574.html" target="_blank" rel="noopener">Getting Started with the G1 Garbage Collector</a></p>
+</li>
+<li><p><a href="https://blogs.oracle.com/jonthecollector/our-collectors" target="_blank" rel="noopener">Jon Masamitsu’s Weblog: Our Collectors</a></p>
+</li>
+<li><p><a href="http://www.oracle.com/technetwork/java/javase/8-whats-new-2157071.html" target="_blank" rel="noopener">What’s New in JDK 8</a></p>
+</li>
+<li><p><a href="https://dzone.com/articles/java-8-permgen-metaspace" target="_blank" rel="noopener">Java 8: From PermGen to Metaspace</a></p>
+</li>
+<li><p><a href="https://docs.oracle.com/javase/9/whatsnew/toc.htm#JSNEW-GUID-C23AFD78-C777-460B-8ACE-58BE5EA681F6" target="_blank" rel="noopener">Java Platform, Standard Edition What’s New in Oracle JDK 9</a></p>
+</li>
+<li><p><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/toc.html" target="_blank" rel="noopener">Java Platform, Standard Edition HotSpot Virtual Machine Garbage Collection Tuning Guide(JDK 8)</a></p>
+</li>
+<li><p><a href="https://docs.oracle.com/javase/9/gctuning/toc.htm" target="_blank" rel="noopener">Java Platform, Standard Edition HotSpot Virtual Machine Garbage Collection Tuning Guide(JDK 9)</a></p>
+</li>
+<li><p><a href="https://blogs.oracle.com/poonam/about-g1-garbage-collector,-permanent-generation-and-metaspace" target="_blank" rel="noopener">About G1 Garbage Collector, Permanent Generation and Metaspace</a></p>
+</li>
+<li><p><a href="http://hllvm.group.iteye.com/group/topic/37095" target="_blank" rel="noopener">ParNew 和 PSYoungGen 和 DefNew 是一个东西么？@RednaxelaFX 的回答</a></p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/Garbage-Collection/" rel="tag"># Garbage Collection</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/14/git/" rel="next" title="Git 命令">
+                <i class="fa fa-chevron-left"></i> Git 命令
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/20/Java-concurrency-basic/" rel="prev" title="Java 线程基础">
+                Java 线程基础 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzAzNi85NTk4"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Muwednesday</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/muwednesday" title="GitHub &rarr; https://github.com/muwednesday" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="/muwednesday@163.com" title="E-Mail &rarr; muwednesday@163.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-内存区域"><span class="nav-number">1.</span> <span class="nav-text">Java 内存区域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#垃圾回收与内存分配"><span class="nav-number">2.</span> <span class="nav-text">垃圾回收与内存分配</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#可达性分析算法"><span class="nav-number">2.1.</span> <span class="nav-text">可达性分析算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#垃圾收集算法"><span class="nav-number">2.2.</span> <span class="nav-text">垃圾收集算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#标记-清除算法"><span class="nav-number">2.2.1.</span> <span class="nav-text">标记-清除算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#复制算法"><span class="nav-number">2.2.2.</span> <span class="nav-text">复制算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#标记-整理算法"><span class="nav-number">2.2.3.</span> <span class="nav-text">标记-整理算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分代收集算法"><span class="nav-number">2.2.4.</span> <span class="nav-text">分代收集算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#垃圾收集器"><span class="nav-number">2.3.</span> <span class="nav-text">垃圾收集器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存分配与回收策略"><span class="nav-number">2.4.</span> <span class="nav-text">内存分配与回收策略</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟机性能监控与故障处理工具"><span class="nav-number">3.</span> <span class="nav-text">虚拟机性能监控与故障处理工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JDK-的命令行工具"><span class="nav-number">3.1.</span> <span class="nav-text">JDK 的命令行工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JDK-的可视化工具"><span class="nav-number">3.2.</span> <span class="nav-text">JDK 的可视化工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#推荐阅读"><span class="nav-number">4.</span> <span class="nav-text">推荐阅读</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Muwednesday</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.2.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.2.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    
+
+
+<script>
+  window.livereOptions = {
+    refer: '2018/01/16/Garbage-Collection/'
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
