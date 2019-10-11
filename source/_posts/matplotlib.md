@@ -38,8 +38,7 @@ y = data.y.tolist()
 plt.plot(x, y)
 plt.show()
 ```
-
-![](simple.png)
+{% qnimg matplotlib/simple.png  %}
 
 ## 复杂例子
 
@@ -117,8 +116,7 @@ fig.tight_layout()
 plt.savefig('fig.png', dpi=600)
 plt.show()
 ```
-
-![](plot.png)
+{% qnimg matplotlib/plot.png  %}
 
 ### 柱状图
 
@@ -165,7 +163,7 @@ plt.savefig('bar.png', dpi=600)
 plt.show()
 ```
 
-![](bar.png)
+{% qnimg matplotlib/bar.png  %}
 
 ## subplot
 
@@ -187,7 +185,7 @@ plt.plot(a, e)
 plt.show()
 ```
 
-![](four.png)
+{% qnimg matplotlib/four.png  %}
 
 当第一行有两个子图，第二行只有一个的时候，需要使用 [GridSpec](https://matplotlib.org/users/gridspec.html)。
 
@@ -205,7 +203,8 @@ ax3.plot(a, d)
 plt.show()
 ```
 
-![](three.png)
+{% qnimg matplotlib/three.png  %}
+
 
 ## 双坐标轴
 
@@ -233,7 +232,7 @@ fig.tight_layout()
 plt.show()
 ```
 
-![](two_scales.png)
+{% qnimg matplotlib/two_scales.png  %}
 
 ## 字体
 
@@ -294,7 +293,8 @@ plt.savefig('latex.png', dpi=600)
 plt.show()
 ```
 
-![](latex.png)
+{% qnimg matplotlib/latex.png  %}
+
 
 Perfect！
 

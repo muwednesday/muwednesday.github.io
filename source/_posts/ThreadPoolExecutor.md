@@ -9,7 +9,7 @@ tags:
 
 <!-- more -->
 
-![Executor](Executor.png)
+{% qnimg ThreadPoolExecutor/Executor.png  %}
 
 ## API
 

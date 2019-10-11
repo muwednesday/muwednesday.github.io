@@ -70,7 +70,7 @@ private static final int RESIZE_STAMP_SHIFT = 32 - RESIZE_STAMP_BITS;
 ### NODE
 Node 用于存储单个KV数据节点，内部有key、value、hash、next等属性，它有4个子类，继承关系如下：
 
-![NODE](Node.png)
+{% qnimg ConcurrentHashMap/Node.png  %}
 
 TreeBin：并不存储实际数据，维护对桶内红黑树的读写锁，存储对红黑树节点的引用。
 TreeNode：在红黑树结构中，实际存储数据的节点
