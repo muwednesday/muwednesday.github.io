@@ -337,6 +337,929 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://muwednesday.github.io/2018/01/16/Garbage-Collection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Muwednesday">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Muwednesday's Note">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/01/16/Garbage-Collection/" class="post-title-link" itemprop="url">Java 垃圾回收机制</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-01-16 15:38:32" itemprop="dateCreated datePublished" datetime="2018-01-16T15:38:32+08:00">2018-01-16</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-06 22:23:35" itemprop="dateModified" datetime="2019-07-06T22:23:35+08:00">2019-07-06</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <blockquote><p>Java Memory Management, with its built-in garbage collection, is one of the language’s finest achievements. It allows developers to create new objects without worrying explicitly about memory allocation and deallocation, because the garbage collector automatically reclaims memory for reuse. This enables faster development with less boilerplate code, while eliminating memory leaks and other memory-related problems. At least in theory.</p>
+<footer><strong>Java Memory Management</strong><cite><a href="https://www.dynatrace.com/resources/ebooks/javabook/how-garbage-collection-works/" target="_blank" rel="noopener">How Garbage Collection Works</a></cite></footer></blockquote>
+
+<p>Java 语言的一大特点就是可以进行自动垃圾回收。对 Java 程序员来说，在虚拟机（JVM）自动内存管理机制的帮助下，不再需要为每一个 new 操作去写配对的 delete/free 代码，不容易出现内存泄漏和内存溢出的问题。不过也正是因为这种便利，一旦出现内存泄漏和溢出方面的问题，如果不了解虚拟机是怎样使用内存的，那么排查错误将会成为一项异常艰难的任务。</p>
+<p>本文是对周志明先生的<a href="https://book.douban.com/subject/24722612/" target="_blank" rel="noopener">《 深入理解 Java 虚拟机（第二版）》</a>第二部分—— <strong>自动内存管理机制</strong> 做的读书笔记，想要了解更详细的内容，请阅读原著。</p>
+<h2 id="Java-内存区域"><a href="#Java-内存区域" class="headerlink" title="Java 内存区域"></a>Java 内存区域</h2><p>在介绍垃圾回收（Garbage Collection，GC）之前，首先来了解一下 JVM 运行时数据区。根据 <a href="https://docs.oracle.com/javase/specs/jvms/se8/jvms8.pdf" target="_blank" rel="noopener">《The Java® Virtual<br>Machine Specification _Java SE 8 Edition_》</a> 的规定，Java 虚拟机所管理的内存将会包括以下几个运行时数据区域：</p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2018/01/16/Garbage-Collection/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://muwednesday.github.io/2018/01/14/git/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Muwednesday">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Muwednesday's Note">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/01/14/git/" class="post-title-link" itemprop="url">Git 命令</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-01-14 12:52:28" itemprop="dateCreated datePublished" datetime="2018-01-14T12:52:28+08:00">2018-01-14</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-06 22:23:35" itemprop="dateModified" datetime="2019-07-06T22:23:35+08:00">2019-07-06</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Tools/" itemprop="url" rel="index"><span itemprop="name">Tools</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <blockquote><p>Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.</p>
+<footer><strong>Documentation</strong><cite><a href="https://git-scm.com/" target="_blank" rel="noopener">git-scm.com</a></cite></footer></blockquote>
+
+<p>Git 是一个开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。它是由 Linux 之父 Linus Torvalds 为了帮助管理 Linux 内核开发而开发的一个开放源码的版本控制软件。本文介绍了 Git 的常用命令。</p>
+<h2 id="三种状态"><a href="#三种状态" class="headerlink" title="三种状态"></a>三种状态</h2><p>在学习 Git 命令之前，首先要理解它的三种状态：已提交（committed）、已修改（modified）和已暂存（staged）。已提交表示数据已经安全的保存在本地数据库中；已修改表示修改了文件，但还没保存到数据库中，增加、删除文件也相当于已修改；已暂存表示对一个已修改文件的当前版本做了标记，使之包含在下次提交的快照中。</p>
+<p>由此引入 Git 项目的三个工作区域的概念：Git 仓库、工作目录以及暂存区域。</p>
+<p><img src="https://git-scm.com/book/en/v2/images/areas.png" alt="Working tree, staging area, and Git directory"></p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2018/01/14/git/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://muwednesday.github.io/2018/01/03/HashMap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Muwednesday">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Muwednesday's Note">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/01/03/HashMap/" class="post-title-link" itemprop="url">HashMap 源码分析</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-01-03 20:10:58" itemprop="dateCreated datePublished" datetime="2018-01-03T20:10:58+08:00">2018-01-03</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-10-11 20:40:05" itemprop="dateModified" datetime="2019-10-11T20:40:05+08:00">2019-10-11</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <blockquote><p>Hash table based implementation of the Map interface. This implementation provides all of the optional map operations, and permits null values and the null key. (The HashMap class is roughly equivalent to Hashtable, except that it is unsynchronized and permits nulls.) This class makes no guarantees as to the order of the map; in particular, it does not guarantee that the order will remain constant over time.</p>
+<footer><strong>Documentation</strong><cite><a href="https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html" target="_blank" rel="noopener">Java Platform SE 8</a></cite></footer></blockquote>
+
+<p>HashMap 是基于散列表的 Map 接口的非同步实现，用于处理映射（键值对）。本文以 JDK 8 的源码为基础，深入分析了 HashMap 的 get&amp;put 方法、扩容机制以及遍历等内容。</p>
+<h2 id="HashMap-简介"><a href="#HashMap-简介" class="headerlink" title="HashMap 简介"></a>HashMap 简介</h2><p>链表和数组可以按照人们的意愿排列元素的次序，但当查找某个元素时，使用这两种数据结构效率较低。如果不在意元素的顺序，可以用散列表来快速查找所需要的对象。散列表（Hash table，也叫哈希表），是根据键而直接访问在内存存储位置的数据结构。也就是说，它通过计算一个关于键值的函数，将所需查询的数据映射到表中一个位置来访问记录，这加快了查找速度。这个映射函数称为散列函数，存放记录的数字称为散列表。</p>
+<p>有时我们知道某些键的信息，并想要查找与之对应的元素，这就需要用到映射（map）。映射用来存放键值对，如果提供了键， 就能够查找到值。HashMap 是散列映射的一种实现，对 key 进行散列，且只能作用于 key，与之关联的 value 不能进行散列。</p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2018/01/03/HashMap/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://muwednesday.github.io/2018/01/02/ArrayList/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Muwednesday">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Muwednesday's Note">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/01/02/ArrayList/" class="post-title-link" itemprop="url">ArrayList 源码分析</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-01-02 09:41:20" itemprop="dateCreated datePublished" datetime="2018-01-02T09:41:20+08:00">2018-01-02</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-10-11 21:01:23" itemprop="dateModified" datetime="2019-10-11T21:01:23+08:00">2019-10-11</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <blockquote><p>Resizable-array implementation of the List interface. Implements all optional list operations, and permits all elements, including null. In addition to implementing the List interface, this class provides methods to manipulate the size of the array that is used internally to store the list. (This class is roughly equivalent to Vector, except that it is unsynchronized.)</p>
+<footer><strong>Documentation</strong><cite><a href="https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html" target="_blank" rel="noopener">Java Platform SE 8</a></cite></footer></blockquote>
+
+<p>这篇 note 介绍一下 Java 集合框架中的 ArrayList，并从源码的角度分析其扩容机制、迭代方法和序列化等内容。</p>
+<h2 id="ArrayList-简介"><a href="#ArrayList-简介" class="headerlink" title="ArrayList 简介"></a>ArrayList 简介</h2><p>想要深入学习某个 class，还是要看其源码。我这里使用 <a href="https://www.jetbrains.com/idea/" target="_blank" rel="noopener">IntelliJ IDEA</a> 这一款出色的 IDE 来研究 ArrayList。</p>
+<p>ArrayList 是一个动态数组，它继承自 AbstractList 这个抽象类，并实现了 List、RandomAccess、Cloneable 以及 Serializable 接口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ArrayList</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractList</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">        <span class="keyword">implements</span> <span class="title">List</span>&lt;<span class="title">E</span>&gt;, <span class="title">RandomAccess</span>, <span class="title">Cloneable</span>, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span></span></span><br></pre></td></tr></table></figure>
+
+<p>为了避免对链表的随机访问操作，Java SE 1.4 引入了一个标记接口 RandomAccess。这个接口不包含任何方法，不过可以用它来测试一个特定的集合是否支持高效的随机访问。显然，ArrayList 支持。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (list <span class="keyword">instanceof</span> RandomAccess) &#123;</span><br><span class="line">    <span class="comment">// use random access algorithm</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// use sequential access algorithm</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2018/01/02/ArrayList/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://muwednesday.github.io/2017/12/15/hexo-github/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Muwednesday">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Muwednesday's Note">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2017/12/15/hexo-github/" class="post-title-link" itemprop="url">Hexo + GitHub Pages 搭建个人博客</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-12-15 14:35:42" itemprop="dateCreated datePublished" datetime="2017-12-15T14:35:42+08:00">2017-12-15</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-06 22:23:35" itemprop="dateModified" datetime="2019-07-06T22:23:35+08:00">2019-07-06</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Tools/" itemprop="url" rel="index"><span itemprop="name">Tools</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <blockquote><p>Hexo is a fast, simple and powerful blog framework. You write posts in Markdown (or other languages) and Hexo generates static files with a beautiful theme in seconds.</p>
+<footer><strong>Documentation</strong><cite><a href="https://hexo.io/docs/index.html" target="_blank" rel="noopener">hexo.io</a></cite></footer></blockquote>
+
+<p>这一篇 note 讲解如何使用 <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> + <a href="https://pages.github.com/" target="_blank" rel="noopener">Github Pages</a> 搭建个人博客，并用 GitHub 进行版本控制。其中源文件位于 hexo 分支，静态文件位于 master 分支。</p>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><ul>
+<li><p>安装最新版的 <a href="https://git-scm.com/" target="_blank" rel="noopener">Git</a>。在命令行输入 <code>git version</code> 检查 git 是否安装成功。</p>
+</li>
+<li><p>安装 LTS 版的 <a href="https://nodejs.org/en/" target="_blank" rel="noopener">Node.js</a>。同样在命令行输入 <code>node -v</code> 和 <code>npm -v</code>以检查 node.js 是否安装成功。</p>
+</li>
+<li><p>注册 GitHub 账号，新建一个 repository，一般命名为 <code>username.github.io</code>，这样 GitHub 会自动开启 GitHub Pages 功能。勾选 <code>Initialize this repository with a README</code> 的话即可访问个人主页，否则需要添加内容才能访问，建议暂时不要勾选。</p>
+</li>
+<li><p>GitHub 添加 SSH（推荐），可参考 <a href="https://help.github.com/articles/connecting-to-github-with-ssh/" target="_blank" rel="noopener">Connecting to GitHub with SSH</a>。</p>
+</li>
+</ul>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2017/12/15/hexo-github/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://muwednesday.github.io/2017/12/05/markdown-syntax/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -560,7 +1483,7 @@ Alt-H2
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-count">16</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -583,7 +1506,9 @@ Alt-H2
                     
                       
                     
-                    <span class="site-state-item-count">3</span>
+                      
+                    
+                    <span class="site-state-item-count">4</span>
                     <span class="site-state-item-name">categories</span>
                   </a>
                 </div>
@@ -616,7 +1541,11 @@ Alt-H2
                     
                       
                     
-                    <span class="site-state-item-count">8</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>

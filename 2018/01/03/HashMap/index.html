@@ -102,15 +102,15 @@
 <meta property="og:site_name" content="Muwednesday&#39;s Note">
 <meta property="og:description" content="Hash table based implementation of the Map interface. This implementation provides all of the optional map operations, and permits null values and the null key. (The HashMap class is roughly equivalen">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://muwednesday.github.io/2018/01/03/HashMap/HashMap.png">
+<meta property="og:image" content="http://pz1b8a7l9.bkt.clouddn.com/blog/images/HashMap/HashMap.png">
 <meta property="og:image" content="https://muwednesday.github.io/2018/01/03/HashMap/hash.png">
 <meta property="og:image" content="https://muwednesday.github.io/2018/01/03/HashMap/RBTree.png">
 <meta property="og:image" content="https://muwednesday.github.io/2018/01/03/HashMap/resize.png">
-<meta property="og:updated_time" content="2019-07-06T14:23:35.570Z">
+<meta property="og:updated_time" content="2019-10-11T12:40:05.335Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HashMap 源码分析">
 <meta name="twitter:description" content="Hash table based implementation of the Map interface. This implementation provides all of the optional map operations, and permits null values and the null key. (The HashMap class is roughly equivalen">
-<meta name="twitter:image" content="https://muwednesday.github.io/2018/01/03/HashMap/HashMap.png">
+<meta name="twitter:image" content="http://pz1b8a7l9.bkt.clouddn.com/blog/images/HashMap/HashMap.png">
 
 
 
@@ -404,7 +404,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2019-07-06 22:23:35" itemprop="dateModified" datetime="2019-07-06T22:23:35+08:00">2019-07-06</time>
+                <time title="Modified: 2019-10-11 20:40:05" itemprop="dateModified" datetime="2019-10-11T20:40:05+08:00">2019-10-11</time>
               </span>
             
           
@@ -473,7 +473,10 @@
 <a id="more"></a>
 
 <p>HashMap 使用<a href="https://www.geeksforgeeks.org/hashing-set-2-separate-chaining/" target="_blank" rel="noopener">链地址法</a>（数组 + 链表）处理哈希碰撞，JDK 8 又加入了红黑树的部分。其继承关系如下图所示：</p>
-<p><img src="HashMap.png" alt="HashMap"></p>
+<!-- ![HashMap](HashMap.png) -->
+
+<img src="http://pz1b8a7l9.bkt.clouddn.com/blog/images/HashMap/HashMap.png">
+
 <p>可见 Map 是一个不同于 Collection 的单独接口。</p>
 <h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><h3 id="重要参数"><a href="#重要参数" class="headerlink" title="重要参数"></a>重要参数</h3><p>HashMap 中定义了几个重要的参数：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 默认初始容量，必须为2的幂次方，这里为16</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_INITIAL_CAPACITY = <span class="number">1</span> &lt;&lt; <span class="number">4</span>;</span><br><span class="line"><span class="comment">// 最大容量，Integer.MAX_VALUE = 2^31-1，这里只能取2^30</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAXIMUM_CAPACITY = <span class="number">1</span> &lt;&lt; <span class="number">30</span>;</span><br><span class="line"><span class="comment">// 默认负载因子</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">float</span> DEFAULT_LOAD_FACTOR = <span class="number">0.75f</span>;</span><br><span class="line"><span class="comment">// 链表转红黑树的阈值</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TREEIFY_THRESHOLD = <span class="number">8</span>;</span><br><span class="line"><span class="comment">// 红黑树转链表的阈值</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> UNTREEIFY_THRESHOLD = <span class="number">6</span>;</span><br><span class="line"><span class="comment">// 链表转红黑树需满足的最小容量</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MIN_TREEIFY_CAPACITY = <span class="number">64</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 扩容的阈值</span></span><br><span class="line"><span class="keyword">int</span> threshold;</span><br><span class="line"><span class="comment">// 负载因子</span></span><br><span class="line"><span class="keyword">final</span> <span class="keyword">float</span> loadFactor;</span><br><span class="line"><span class="comment">// 键值对的数目</span></span><br><span class="line"><span class="keyword">transient</span> <span class="keyword">int</span> size;</span><br></pre></td></tr></table></figure>
@@ -689,7 +692,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-count">16</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -712,7 +715,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">3</span>
+                      
+                    
+                    <span class="site-state-item-count">4</span>
                     <span class="site-state-item-name">categories</span>
                   </a>
                 </div>
@@ -745,7 +750,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">8</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>
