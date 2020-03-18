@@ -435,7 +435,7 @@ Deleted branch dev (was 7f5d2b1).
 
 这里以 GitHub 为例，演示如何使用远程仓库。在 GitHub 上创建一个新的 Repository，不要添加任何内容，完成后如下图所示：
 
-{% qnimg git/github.png  %}
+![GitHub](github.png)
 
 添加远程仓库：
 
