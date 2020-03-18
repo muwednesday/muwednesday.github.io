@@ -36,7 +36,7 @@ public class ArrayList<E> extends AbstractList<E>
 
 ArrayList 的继承关系如下图所示。
 
-{% qnimg ArrayList/ArrayList.png  %}
+![ArrayList](ArrayList.png)
 
 其中绿色虚线为实现接口，绿色实现代表继承接口，蓝色实线表示类的继承。
 

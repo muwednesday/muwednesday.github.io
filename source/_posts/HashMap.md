@@ -21,9 +21,7 @@ HashMap 是基于散列表的 Map 接口的非同步实现，用于处理映射�
 
 HashMap 使用[链地址法](https://www.geeksforgeeks.org/hashing-set-2-separate-chaining/)（数组 + 链表）处理哈希碰撞，JDK 8 又加入了红黑树的部分。其继承关系如下图所示：
 
-<!-- ![HashMap](HashMap.png) -->
-
-{% qnimg HashMap/HashMap.png  %}
+![HashMap](HashMap.png)
 
 可见 Map 是一个不同于 Collection 的单独接口。
 
