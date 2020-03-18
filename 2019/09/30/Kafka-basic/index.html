@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="Muwednesday&#39;s Note">
 <meta property="og:description" content="kafka basic">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-09-30T16:37:13.494Z">
+<meta property="og:updated_time" content="2019-10-17T10:02:45.717Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kafka-basic">
 <meta name="twitter:description" content="kafka basic">
@@ -399,7 +399,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2019-10-01 00:37:13" itemprop="dateModified" datetime="2019-10-01T00:37:13+08:00">2019-10-01</time>
+                <time title="Modified: 2019-10-17 18:02:45" itemprop="dateModified" datetime="2019-10-17T18:02:45+08:00">2019-10-17</time>
               </span>
             
           
@@ -462,7 +462,18 @@
         <p>kafka basic</p>
 <a id="more"></a>
 
-<h2 id="kafka-安装"><a href="#kafka-安装" class="headerlink" title="kafka 安装"></a>kafka 安装</h2>
+<h2 id="kafka-安装"><a href="#kafka-安装" class="headerlink" title="kafka 安装"></a>kafka 安装</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl -O https://mirrors.tuna.tsinghua.edu.cn/apache/zookeeper/zookeeper-3.5.5/apache-zookeeper-3.5.5-bin.tar.gz</span><br><span class="line">tar xvzf apache-zookeeper-3.5.5-bin.tar.gz -C zookeeper --strip-components=1</span><br><span class="line"></span><br><span class="line">bin/zkServer.sh start</span><br><span class="line">ps aux | grep zoo.cfg</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://www.explainshell.com/" target="_blank" rel="noopener">https://www.explainshell.com/</a><br>man<br>tldr<br>tar -xzf FILENAME -C FOLDER –strip-components=1</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">curl -O http://mirrors.tuna.tsinghua.edu.cn/apache/kafka/2.3.0/kafka_2.12-2.3.0.tgz</span><br><span class="line">tar xvzf kafka_2.12-2.3.0.tgz -C kafka --strip-components=1</span><br><span class="line"></span><br><span class="line">bin/kafka-server-start.sh -daemon config/server.properties</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[repositories]</span><br><span class="line">  local</span><br><span class="line">  my-ivy-proxy-releases: http://repo.typesafe.com/typesafe/ivy-releases/, [organization]/[module]/(scala_[scalaVersion]/)(sbt_[sbtVersion]/)[revision]/[type]s/[artifact](-[classifier]).[ext]</span><br><span class="line">  my-maven-proxy-releases: http://maven.aliyun.com/nexus/content/groups/public</span><br></pre></td></tr></table></figure>
+
+<p>```<br>bin/kafka-topics.sh –create –zookeeper localhost:2181 –replication-factor 1 –partitions 1 –topic test<br>bin/kafka-topics.sh –list –zookeeper localhost:2181<br>bin/kafka-console-producer.sh –broker-list localhost:9092 –topic test<br>bin/kafka-console-consumer.sh –bootstrap-server localhost:9092 –topic test –from-beginning</p>
+<p>bin/kafka-topics.sh –create –zookeeper localhost:2181/test –replication-factor 3 –partitions 1 –topic my-replicated-topic<br>bin/kafka-topics.sh –describe –zookeeper localhost:2181/test –topic my-replicated-topic</p>
+<p>bin/kafka-console-producer.sh –broker-list localhost:9092 –topic my-replicated-topic<br>bin/kafka-console-consumer.sh –bootstrap-server localhost:9092 –from-beginning –topic my-replicated-topic</p>
+<p>ps aux | grep -E /server.*.properties</p>
+
       
     </div>
 
@@ -645,7 +656,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">10</span>
+                      
+                    
+                    <span class="site-state-item-count">11</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>
@@ -730,7 +743,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>

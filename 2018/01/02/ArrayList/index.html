@@ -102,12 +102,12 @@
 <meta property="og:site_name" content="Muwednesday&#39;s Note">
 <meta property="og:description" content="Resizable-array implementation of the List interface. Implements all optional list operations, and permits all elements, including null. In addition to implementing the List interface, this class prov">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://pz1b8a7l9.bkt.clouddn.com/blog/images/ArrayList/ArrayList.png">
-<meta property="og:updated_time" content="2019-10-11T13:01:23.341Z">
+<meta property="og:image" content="https://muwednesday.github.io/2018/01/02/ArrayList/ArrayList.png">
+<meta property="og:updated_time" content="2020-03-18T13:51:38.466Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ArrayList 源码分析">
 <meta name="twitter:description" content="Resizable-array implementation of the List interface. Implements all optional list operations, and permits all elements, including null. In addition to implementing the List interface, this class prov">
-<meta name="twitter:image" content="http://pz1b8a7l9.bkt.clouddn.com/blog/images/ArrayList/ArrayList.png">
+<meta name="twitter:image" content="https://muwednesday.github.io/2018/01/02/ArrayList/ArrayList.png">
 
 
 
@@ -401,7 +401,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2019-10-11 21:01:23" itemprop="dateModified" datetime="2019-10-11T21:01:23+08:00">2019-10-11</time>
+                <time title="Modified: 2020-03-18 21:51:38" itemprop="dateModified" datetime="2020-03-18T21:51:38+08:00">2020-03-18</time>
               </span>
             
           
@@ -475,8 +475,7 @@
 <a id="more"></a>
 
 <p>ArrayList 的继承关系如下图所示。</p>
-<img src="http://pz1b8a7l9.bkt.clouddn.com/blog/images/ArrayList/ArrayList.png">
-
+<p><img src="ArrayList.png" alt="ArrayList"></p>
 <p>其中绿色虚线为实现接口，绿色实现代表继承接口，蓝色实线表示类的继承。</p>
 <h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><h3 id="扩容机制"><a href="#扩容机制" class="headerlink" title="扩容机制"></a>扩容机制</h3><p>我们知道，ArrayList 是一个动态数组，它在底层使用 Object 类型的定长数组存储数据，默认初始容量为10。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 数组</span></span><br><span class="line"><span class="keyword">transient</span> Object[] elementData;</span><br><span class="line"><span class="comment">// 默认初始容量</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_CAPACITY = <span class="number">10</span>;</span><br></pre></td></tr></table></figure>
@@ -748,7 +747,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">10</span>
+                      
+                    
+                    <span class="site-state-item-count">11</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>
@@ -833,7 +834,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>

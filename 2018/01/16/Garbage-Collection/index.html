@@ -102,19 +102,19 @@
 <meta property="og:site_name" content="Muwednesday&#39;s Note">
 <meta property="og:description" content="Java Memory Management, with its built-in garbage collection, is one of the language’s finest achievements. It allows developers to create new objects without worrying explicitly about memory allocati">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://pz1b8a7l9.bkt.clouddn.com/blog/images/Garbage-Collection/JVM.png">
+<meta property="og:image" content="https://muwednesday.github.io/2018/01/16/Garbage-Collection/JVM.png">
 <meta property="og:image" content="https://dt-cdn.net/assets/images/content/ebook/javabook/gc-roots-1d9223317f.png">
-<meta property="og:image" content="http://pz1b8a7l9.bkt.clouddn.com/blog/images/Garbage-Collection/mark-sweep.png">
-<meta property="og:image" content="http://pz1b8a7l9.bkt.clouddn.com/blog/images/Garbage-Collection/copying.png">
-<meta property="og:image" content="http://pz1b8a7l9.bkt.clouddn.com/blog/images/Garbage-Collection/mark-compact.png">
-<meta property="og:image" content="http://pz1b8a7l9.bkt.clouddn.com/blog/images/Garbage-Collection/generation.png">
-<meta property="og:image" content="http://pz1b8a7l9.bkt.clouddn.com/blog/images/Garbage-Collection/collectors.png">
-<meta property="og:image" content="http://pz1b8a7l9.bkt.clouddn.com/blog/images/Garbage-Collection/VisualVM.png">
-<meta property="og:updated_time" content="2019-10-11T13:23:15.153Z">
+<meta property="og:image" content="https://muwednesday.github.io/2018/01/16/Garbage-Collection/mark-sweep.png">
+<meta property="og:image" content="https://muwednesday.github.io/2018/01/16/Garbage-Collection/copying.png">
+<meta property="og:image" content="https://muwednesday.github.io/2018/01/16/Garbage-Collection/mark-compact.png">
+<meta property="og:image" content="https://muwednesday.github.io/2018/01/16/Garbage-Collection/generation.png">
+<meta property="og:image" content="https://muwednesday.github.io/2018/01/16/Garbage-Collection/collectors.png">
+<meta property="og:image" content="https://muwednesday.github.io/2018/01/16/Garbage-Collection/VisualVM.png">
+<meta property="og:updated_time" content="2020-03-18T14:01:25.873Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java 垃圾回收机制">
 <meta name="twitter:description" content="Java Memory Management, with its built-in garbage collection, is one of the language’s finest achievements. It allows developers to create new objects without worrying explicitly about memory allocati">
-<meta name="twitter:image" content="http://pz1b8a7l9.bkt.clouddn.com/blog/images/Garbage-Collection/JVM.png">
+<meta name="twitter:image" content="https://muwednesday.github.io/2018/01/16/Garbage-Collection/JVM.png">
 
 
 
@@ -408,7 +408,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2019-10-11 21:23:15" itemprop="dateModified" datetime="2019-10-11T21:23:15+08:00">2019-10-11</time>
+                <time title="Modified: 2020-03-18 22:01:25" itemprop="dateModified" datetime="2020-03-18T22:01:25+08:00">2020-03-18</time>
               </span>
             
           
@@ -497,31 +497,25 @@
 </ul>
 <p>另外，书中还介绍了直接内存（Direct Memory），它不是虚拟机运行时数据区的一部分，也不是 Java 虚拟机规范中定义的内存区域。服务器管理员在配置虚拟机参数时，会根据实际内存设置 -Xmx 等参数信息，但经常忽略直接内存，使得各内存区域总和大于物理内存限制，从而导致动态扩展时出现 <strong>OutOfMemoryError</strong>。</p>
 <p>下图为 HotSpot 虚拟机（Java 虚拟机规范的一种实现，是 Sun JDK 和 OpenJDK 中所带的虚拟机，也是目前使用范围最广的 Java 虚拟机）的架构图。</p>
-<img src="http://pz1b8a7l9.bkt.clouddn.com/blog/images/Garbage-Collection/JVM.png">
-
+<p><img src="JVM.png" alt="Hotspot JVM: Architecture"></p>
 <p>在进行性能调优时，JVM 重点关注三个组件。其中堆是存储对象实例的地方，它由 JVM 启动时选择的垃圾收集器管理。大多数调优选项都是针对堆的大小以及如何根据情况选择最合适的垃圾收集器。JTI（Just-in-time）编译器对性能也有很大的影响，但使用新版本的 JVM 很少需要对其进行调优。</p>
 <h2 id="垃圾回收与内存分配"><a href="#垃圾回收与内存分配" class="headerlink" title="垃圾回收与内存分配"></a>垃圾回收与内存分配</h2><p>程序计数器、虚拟机栈、本地方法栈 3 个区域随线程而生，随线程而灭，它们的内存分配和回收都具备确定性。而 Java 堆和方法区则不同，一个接口中的多个实现类需要的内存可能不一样，一个方法中的多个分支需要的内存也可能不一样，我们只有在程序处于运行期间时才能知道会创建哪些对象，这部分内存的分配和回收都是动态的，垃圾回收器所关注的是这部分内存。</p>
 <h3 id="可达性分析算法"><a href="#可达性分析算法" class="headerlink" title="可达性分析算法"></a>可达性分析算法</h3><p>在主流的商用程序语言的主流实现中，都是通过 <strong>可达性分析</strong>（Reachability Analysis）来判定对象是否存活的。这个算法的基本思路就是通过一系列的称为 “GC Roots” 的对象作为起点，从这些节点开始向下搜索，搜索所走过的路径称为引用链（Reference Chain），当一个对象到 GC Roots 没有任何引用链相连（用图论的话来说，就是从 GC Roots 到这个对象不可达）时，则证明此对象是不可用的。</p>
 <p><img src="https://dt-cdn.net/assets/images/content/ebook/javabook/gc-roots-1d9223317f.png" alt="Reachability Analysis"></p>
 <h3 id="垃圾收集算法"><a href="#垃圾收集算法" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h3><h4 id="标记-清除算法"><a href="#标记-清除算法" class="headerlink" title="标记-清除算法"></a>标记-清除算法</h4><p>标记-清除（<a href="(https://en.wikipedia.org/wiki/Tracing_garbage_collection#Na%C3%AFve_mark-and-sweep)">Mark-Sweep</a>）算法分为 “标记” 和 “清除” 两个阶段：首先标记出所有需要回收的对象，在标记完成后统一回收所有被标记的对象。它有两个不足：一是效率问题，标记和清除两个过程的效率都不高；另一个是空间问题，标记清除后会产生大量不连续的内存碎片。</p>
-<img src="http://pz1b8a7l9.bkt.clouddn.com/blog/images/Garbage-Collection/mark-sweep.png">
-
+<p><img src="mark-sweep.png" alt="Mark-Sweep"></p>
 <h4 id="复制算法"><a href="#复制算法" class="headerlink" title="复制算法"></a>复制算法</h4><p>复制（<a href="https://en.wikipedia.org/wiki/Cheney%27s_algorithm" target="_blank" rel="noopener">Copying</a>）算法将可用内存按容量划分为大小相等的两块，当一块内存用完了，就将还存活着的对象复制到另一块上面，然后再把已使用过的内存一次清理掉。该算法简单高效，但代价是将内存缩小为原来的一半。</p>
-<img src="http://pz1b8a7l9.bkt.clouddn.com/blog/images/Garbage-Collection/copying.png">
-
+<p><img src="copying.png" alt="Copying"></p>
 <p>现代的商业虚拟机都是采用复制算法来回收新生代，新生代中的对象 98% 是 “朝生夕死” 的，可将内存分为一块较大的 Eden 空间和两块较小的 Survivor 空间（HotSpot 虚拟机默认比例为 8 : 1 : 1），每次使用 Eden 和其中的一块 Survivor。当回收时，将 Eden 和 Survivor 中还存活着的对象一次性地复制到另外一块 Survivor 空间上，最后清理掉 Eden 和刚才用过的 Survivor 空间。当 Survivor 空间不够用时，需要依赖其他内存（这里指老年代）进行分配担保（Handle Promotion）。</p>
 <h4 id="标记-整理算法"><a href="#标记-整理算法" class="headerlink" title="标记-整理算法"></a>标记-整理算法</h4><p>标记整理（<a href="(https://en.wikipedia.org/wiki/Mark-compact_algorithm)">Mark-Compact</a>）算法作用于老年代，其标记过程与 Mark-Sweep 算法一样，但后续步骤不是直接对可回收对象进行清理，而是让所有存活对象都移向一端，然后直接清理掉端边界以外的内存。</p>
-<img src="http://pz1b8a7l9.bkt.clouddn.com/blog/images/Garbage-Collection/mark-compact.png">
-
+<p><img src="mark-compact.png" alt="Mark-Compact"></p>
 <h4 id="分代收集算法"><a href="#分代收集算法" class="headerlink" title="分代收集算法"></a>分代收集算法</h4><p>当前商业虚拟机的垃圾收集都采用分代收集（Generational Collection）算法。一般把 Java 堆分为新生代和老年代：在新生代中，每次垃圾收集时都发现有大批对象死去，只有少量存活，那就选用复制算法，只需要付出少量存活对象的复制成本就可以完成收集；而老年代中因为对象存活率高、没有额外空间对它进行分配担保，就必须使用 Mark-Sweep 或者 Mark-Compact 算法进行回收。</p>
-<img src="http://pz1b8a7l9.bkt.clouddn.com/blog/images/Garbage-Collection/generation.png">
-
+<p><img src="generation.png" alt="Generational Collection"></p>
 <p>新生代 GC（Minor GC）：指发生在新生代的垃圾收集动作，因为 Java 对象大多具有朝生夕灭的特性，所以 Minor GC 非常频繁，一般回收速度也比较块。</p>
 <p>老年代 GC （Major GC/ Full GC）：指发生在老年代的 GC，出现了 Major GC，经常会伴随着至少一次的 Minor GC（但非绝对的，在 Parallel Scavenge 收集器的收集策略里就有直接进行 Major GC 的策略选择过程）。Major GC 的速度一般会比 Minor GC 慢 10 倍以上。</p>
 <p>HotSpot 虚拟机使用永久代（Permanent Generation）来实现方法区，这样垃圾收集器可以像管理 Java 堆一样管理这部分内存。不过 JDK 8 已经 <a href="http://www.oracle.com/technetwork/java/javase/8-whats-new-2157071.html" target="_blank" rel="noopener"><strong>移除</strong></a> 了永久代，采用名为 <strong>Metaspace</strong> 的 Native Memory 来实现方法区，详见 <a href="https://blogs.oracle.com/poonam/about-g1-garbage-collector,-permanent-generation-and-metaspace" target="_blank" rel="noopener">这里</a>。</p>
 <h3 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h3><p>下图展示了 7 种作用于不同分代的收集器（<a href="https://blogs.oracle.com/jonthecollector/our-collectors" target="_blank" rel="noopener">Our Collectors</a>），如果两个收集器之间存在连线，就说明它们之间可以搭配使用。虚拟机所处的区域，则表示它是属于新生代收集器还是老年代收集器。</p>
-<img src="http://pz1b8a7l9.bkt.clouddn.com/blog/images/Garbage-Collection/collectors.png">
-
+<p><img src="collectors.png" alt="HotSpot 虚拟机的垃圾收集器"></p>
 <p>JDK 9 <a href="https://docs.oracle.com/javase/9/whatsnew/toc.htm#JSNEW-GUID-C23AFD78-C777-460B-8ACE-58BE5EA681F6" target="_blank" rel="noopener"><strong>移除</strong></a> 了三个在 JDK 8 中被废弃的垃圾收集器组合，分别是 DefNew(Serial) + CMS、ParNew + SerialOld 以及 Incremental CMS（增量式并发收集器）。</p>
 <p>JDK 9 使用 G1 作为默认的垃圾回收器（JDK 8 中默认为 ParallelGC，即 Parallel Scavenge + Serial Old 的组合），并将 CMS 声明为 “deprecated”，即不再提倡用户使用。</p>
 <ul>
@@ -568,8 +562,7 @@
 </li>
 </ul>
 <p>由于 VisualVM 已迁移到 GitHub 上，安装插件时需要设置 <a href="https://visualvm.github.io/pluginscenters.html" target="_blank" rel="noopener">Java VisualVM 插件中心</a> 的 URL 为对应版本的地址。</p>
-<img src="http://pz1b8a7l9.bkt.clouddn.com/blog/images/Garbage-Collection/VisualVM.png">
-
+<p><img src="VisualVM.png" alt></p>
 <h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
 <li><p>周志明. 深入理解Java虚拟机, 第2版[M]. 机械工业出版社, 2013.</p>
 </li>
@@ -781,7 +774,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">10</span>
+                      
+                    
+                    <span class="site-state-item-count">11</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>
@@ -866,7 +861,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
