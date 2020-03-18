@@ -49,7 +49,7 @@ Machine Specification _Java SE 8 Edition_》](https://docs.oracle.com/javase/spe
 
 下图为 HotSpot 虚拟机（Java 虚拟机规范的一种实现，是 Sun JDK 和 OpenJDK 中所带的虚拟机，也是目前使用范围最广的 Java 虚拟机）的架构图。
 
-{% qnimg Garbage-Collection/JVM.png  %}
+![Hotspot JVM: Architecture](JVM.png)
 
 在进行性能调优时，JVM 重点关注三个组件。其中堆是存储对象实例的地方，它由 JVM 启动时选择的垃圾收集器管理。大多数调优选项都是针对堆的大小以及如何根据情况选择最合适的垃圾收集器。JTI（Just-in-time）编译器对性能也有很大的影响，但使用新版本的 JVM 很少需要对其进行调优。
 
@@ -69,13 +69,13 @@ Machine Specification _Java SE 8 Edition_》](https://docs.oracle.com/javase/spe
 
 标记-清除（[Mark-Sweep]((https://en.wikipedia.org/wiki/Tracing_garbage_collection#Na%C3%AFve_mark-and-sweep))）算法分为 “标记” 和 “清除” 两个阶段：首先标记出所有需要回收的对象，在标记完成后统一回收所有被标记的对象。它有两个不足：一是效率问题，标记和清除两个过程的效率都不高；另一个是空间问题，标记清除后会产生大量不连续的内存碎片。
 
-{% qnimg Garbage-Collection/mark-sweep.png  %}
+![Mark-Sweep](mark-sweep.png)
 
 #### 复制算法
 
 复制（[Copying](https://en.wikipedia.org/wiki/Cheney%27s_algorithm)）算法将可用内存按容量划分为大小相等的两块，当一块内存用完了，就将还存活着的对象复制到另一块上面，然后再把已使用过的内存一次清理掉。该算法简单高效，但代价是将内存缩小为原来的一半。
 
-{% qnimg Garbage-Collection/copying.png  %}
+![Copying](copying.png)
 
 现代的商业虚拟机都是采用复制算法来回收新生代，新生代中的对象 98% 是 “朝生夕死” 的，可将内存分为一块较大的 Eden 空间和两块较小的 Survivor 空间（HotSpot 虚拟机默认比例为 8 : 1 : 1），每次使用 Eden 和其中的一块 Survivor。当回收时，将 Eden 和 Survivor 中还存活着的对象一次性地复制到另外一块 Survivor 空间上，最后清理掉 Eden 和刚才用过的 Survivor 空间。当 Survivor 空间不够用时，需要依赖其他内存（这里指老年代）进行分配担保（Handle Promotion）。
 
@@ -83,13 +83,13 @@ Machine Specification _Java SE 8 Edition_》](https://docs.oracle.com/javase/spe
 
 标记整理（[Mark-Compact]((https://en.wikipedia.org/wiki/Mark-compact_algorithm))）算法作用于老年代，其标记过程与 Mark-Sweep 算法一样，但后续步骤不是直接对可回收对象进行清理，而是让所有存活对象都移向一端，然后直接清理掉端边界以外的内存。
 
-{% qnimg Garbage-Collection/mark-compact.png  %}
+![Mark-Compact](mark-compact.png)
 
 #### 分代收集算法
 
 当前商业虚拟机的垃圾收集都采用分代收集（Generational Collection）算法。一般把 Java 堆分为新生代和老年代：在新生代中，每次垃圾收集时都发现有大批对象死去，只有少量存活，那就选用复制算法，只需要付出少量存活对象的复制成本就可以完成收集；而老年代中因为对象存活率高、没有额外空间对它进行分配担保，就必须使用 Mark-Sweep 或者 Mark-Compact 算法进行回收。
 
-{% qnimg Garbage-Collection/generation.png  %}
+![Generational Collection](generation.png)
 
 新生代 GC（Minor GC）：指发生在新生代的垃圾收集动作，因为 Java 对象大多具有朝生夕灭的特性，所以 Minor GC 非常频繁，一般回收速度也比较块。
 
@@ -101,7 +101,7 @@ HotSpot 虚拟机使用永久代（Permanent Generation）来实现方法区，�
 
 下图展示了 7 种作用于不同分代的收集器（[Our Collectors](https://blogs.oracle.com/jonthecollector/our-collectors)），如果两个收集器之间存在连线，就说明它们之间可以搭配使用。虚拟机所处的区域，则表示它是属于新生代收集器还是老年代收集器。
 
-{% qnimg Garbage-Collection/collectors.png  %}
+![HotSpot 虚拟机的垃圾收集器](collectors.png)
 
 JDK 9 [**移除**](https://docs.oracle.com/javase/9/whatsnew/toc.htm#JSNEW-GUID-C23AFD78-C777-460B-8ACE-58BE5EA681F6) 了三个在 JDK 8 中被废弃的垃圾收集器组合，分别是 DefNew(Serial) + CMS、ParNew + SerialOld 以及 Incremental CMS（增量式并发收集器）。
 
@@ -159,7 +159,7 @@ JDK 中除了提供命令行工具外，还有两个功能强大的可视化工�
 
 由于 VisualVM 已迁移到 GitHub 上，安装插件时需要设置 [Java VisualVM 插件中心](https://visualvm.github.io/pluginscenters.html) 的 URL 为对应版本的地址。
 
-{% qnimg Garbage-Collection/VisualVM.png  %}
+![](VisualVM.png)
 
 ## 推荐阅读
 

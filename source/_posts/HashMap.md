@@ -109,7 +109,8 @@ Map<LocalDateTime, String> map = new HashMap<>(16);
 // hashCode = -833367753, hash = -833413276, index = 4
 map.put(LocalDateTime.of(2018, 1, 12, 20, 0, 0), "clock");
 ```
-{% qnimg HashMap/hash.png  %}
+
+![How does the bucket index calculation work?](hash.png)
 
 ### put 方法
 
@@ -211,7 +212,7 @@ JDK 8 利用红黑树快速增删改查的特点提高 HashMap 的性能。下�
 
 正常情况下，红黑树的 first node 为其根节点。转换后的红黑树如下图所示：
 
-{% qnimg HashMap/RBTree.png  %}
+![RBTree](RBTree.png)
 
 上图使用 [Red/Blcak Tree](https://www.cs.usfca.edu/~galles/visualization/RedBlack.html) 绘制。想了解更多关于红黑树的知识，请参考[教你透彻了解红黑树](https://github.com/julycoding/The-Art-Of-Programming-By-July/blob/master/ebook/zh/03.01.md)。
 
@@ -267,7 +268,8 @@ map.put(32, "32");
 // threshold = 12，需要 resize
 map.put(48, "48");
 ```
-{% qnimg HashMap/resize.png  %}
+
+![resize](resize.png)
 
 resize 的源码如下：
 
